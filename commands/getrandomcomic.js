@@ -14,7 +14,7 @@ module.exports = {
   action(bot, msg, suffix, settings, extension) {
     return persistence.getGlobalData().then(globalData => {
       if (!globalData.comics) {
-        return msg.channel.createMessage('There aren\'t any comics yet :( Use the Septapus to make some new comics.');
+        return msg.channel.createMessage('There aren\'t any comics yet :( Use Septapus to make some new comics.');
       }
 
       let comicIndex = Math.floor(Math.random() * globalData.comics.length);
