@@ -5,7 +5,7 @@ const persistence = require('monochrome-bot').persistence;
 * Demonstrates getting persisted data.
 */
 module.exports = {
-  commandAliases: ['bot!getcomic'],
+  commandAliases: ['$comic'],
   canBeChannelRestricted: false,
   serverAdminOnly: false,
   uniqueId: 'getComic70327',
