@@ -7,8 +7,8 @@ const persistence = require('monochrome-bot').persistence;
 module.exports = {
   name: 'comicarchive',
   action(bot, msg) {
-    if (msg.author.bot && msg.attachments) {
-      let attachment = msg.attachments[0];
+    let attachment = msg.attachments[0];
+    if (msg.author.bot && attachment) {
       if (attachment.filename === 'comic.png') {
         return persistence.editGlobalData(globalData => {
           if (!globalData.comics) {
