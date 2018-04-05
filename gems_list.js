@@ -3,8 +3,9 @@ const persistence = require('moodochrome-bot').persistence;
 
 class GemsList {
   static update(gemsListChannel) {
-    persistence.getGlobalData().then(globalData => {
-      let gems = globalData['gems'];
+    let serverId = gemsListChannel.guild.id;
+    persistence.getDataForServer(serverId).then(serverData => {
+      let gems = serverData['gems'];
       if (gems) {
         Object.keys(gems).forEach(userId => {
           let gem = gems[userId];
@@ -27,7 +28,7 @@ class GemsList {
             }
           };
 
-          let gemHeaders = globalData['gemHeaders'];
+          let gemHeaders = serverData['gemHeaders'];
           if (gemHeaders) {
             content.embed.image = {
               url: gemHeaders[gem.title]
@@ -41,12 +42,13 @@ class GemsList {
   }
 
   static updateRoom(gemsListChannel, creator, title) {
-    return persistence.editGlobalData(globalData => {
-      if (!globalData.gems) {
-        globalData.gems = {};
+    let serverId = gemsListChannel.guild.id;
+    return persistence.editDataForServer(serverId, serverData => {
+      if (!serverData.gems) {
+        serverData.gems = {};
       }
 
-      if (!globalData.gems[creator.id]) {
+      if (!serverData.gems[creator.id]) {
         let content = {
           embed: { 
             title: 'reserved'
@@ -65,39 +67,41 @@ class GemsList {
 
           gem.players[creator.id] = creator;
 
-          globalData.gems[creator.id] = gem;
-          return globalData;
+          serverData.gems[creator.id] = gem;
+          return serverData;
         });
       } else {
-        globalData.gems[creator.id].title = title;
+        serverData.gems[creator.id].title = title;
       }
       
-      return globalData;
+      return serverData;
     }).then(() => {
       this.update(gemsListChannel);
     });
   }
 
   static updateCode(gemsListChannel, creator, code) {
-    return persistence.editGlobalData(globalData => {
-      if (!globalData.gems) {
+    let serverId = gemsListChannel.guild.id;
+    return persistence.editDataForServer(serverId, serverData => {
+      if (!serverData.gems) {
         return false;
       }
 
-      if (!globalData.gems[creator.id]) {
+      if (!serverData.gems[creator.id]) {
         return false;
       }
 
-      globalData.gems[creator.id].code = code;
-      return globalData;
+      serverData.gems[creator.id].code = code;
+      return serverData;
     }).then(() => {
       this.update(gemsListChannel);
     });
   }
 
   static closeRoom_(gemsListChannel, userId) {
-    persistence.editGlobalData(globalData => {
-      let gems = globalData['gems'];
+    let serverId = gemsListChannel.guild.id;
+    persistence.editDataForServer(serverId, serverData => {
+      let gems = serverData['gems'];
       gemsListChannel.deleteMessage(gems[userId].messageId);
       // clean up replies
       if (gems[userId].replies) {
@@ -106,13 +110,14 @@ class GemsList {
         });
       }
       delete gems[userId];
-      return globalData;
+      return serverData;
     });
   }
 
   static closeRoom(gemsListChannel, userId, messageId) {
-    return persistence.getGlobalData().then(globalData => {
-      let gems = globalData['gems'];
+    let serverId = gemsListChannel.guild.id;
+    return persistence.getDataForServer(serverId).then(serverData => {
+      let gems = serverData['gems'];
       if (!gems[userId]) {
         return false;
       }
@@ -128,8 +133,9 @@ class GemsList {
   }
 
   static joinRoom_(gemsListChannel, user, masterId) {
-    persistence.editGlobalData(globalData => {
-      let gems = globalData['gems'];
+    let serverId = gemsListChannel.guild.id;
+    persistence.editDataForServer(serverId, serverData => {
+      let gems = serverData['gems'];
       if (!gems[masterId].players[user.id]) {
         gems[masterId].players[user.id] = user;
         return gemsListChannel.createMessage('<@' + masterId + '>: ' + user.username + ' has joined your game.').then(resolve => {
@@ -137,11 +143,11 @@ class GemsList {
             gems[masterId].replies = [];
           }
           gems[masterId].replies.push(resolve.id);
-          return globalData;
+          return serverData;
         });
       } else {
         delete gems[masterId].players[user.id];
-        return globalData;
+        return serverData;
       }
     }).then(() => {
       this.update(gemsListChannel);
@@ -149,8 +155,9 @@ class GemsList {
   }
 
   static joinRoom(gemsListChannel, userId, messageId) {
-    return persistence.getGlobalData().then(globalData => {
-      let gems = globalData['gems'];
+    let serverId = gemsListChannel.guild.id;
+    return persistence.getDataForServer(serverId).then(serverData => {
+      let gems = serverData['gems'];
       let user = gemsListChannel.guild.members.find(member => member.id === userId).user;
       if (user.bot) {
         return false;
@@ -166,12 +173,13 @@ class GemsList {
   }
 
   static updateHeader(gemsListChannel, title, url) {
-    return persistence.editGlobalData(globalData => {
-      if (!globalData['gemHeaders']) {
-        globalData['gemHeaders'] = {};
+    let serverId = gemsListChannel.guild.id;
+    return persistence.editDataForServer(serverId, serverData => {
+      if (!serverData['gemHeaders']) {
+        serverData['gemHeaders'] = {};
       }
-      globalData['gemHeaders'][title] = url;
-      return globalData;
+      serverData['gemHeaders'][title] = url;
+      return serverData;
     }).then(() => {
       this.update(gemsListChannel);
     });
