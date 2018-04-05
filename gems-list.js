@@ -8,8 +8,13 @@ class GemsList {
       if (gems) {
         Object.keys(gems).forEach(userId => {
           let gem = gems[userId];
+          
+          let code = '';
+          if (gem.code) {
+            code = '**Code:** ' + gem.code + '\r\n';
+          }
 
-          let players = '**Players**:';
+          let players = '**Players:**';
           Object.keys(gem.players).forEach(playerId => {
             let player = gem.players[playerId];
             players += ' ' + player.username + ',';
@@ -19,7 +24,7 @@ class GemsList {
           let content = {
             embed: {
               title: gem.title,
-              description: players
+              description: code + players
             }
           };
 
@@ -68,6 +73,23 @@ class GemsList {
         globalData.gems[creator.id].title = title;
       }
       
+      return globalData;
+    }).then(() => {
+      this.update(gemsListChannel);
+    });
+  }
+
+  static updateCode(gemsListChannel, creator, code) {
+    return persistence.editGlobalData(globalData => {
+      if (!globalData.gems) {
+        return false;
+      }
+
+      if (!globalData.gems[creator.id]) {
+        return false;
+      }
+
+      globalData.gems[creator.id].code = code;
       return globalData;
     }).then(() => {
       this.update(gemsListChannel);
@@ -136,13 +158,15 @@ class GemsList {
     });
   }
 
-  static updateHeader(title, url) {
+  static updateHeader(gemsListChannel, title, url) {
     return persistence.editGlobalData(globalData => {
       if (!globalData['gemHeaders']) {
         globalData['gemHeaders'] = {};
       }
       globalData['gemHeaders'][title] = url;
       return globalData;
+    }).then(() => {
+      this.update(gemsListChannel);
     });
   }
 }

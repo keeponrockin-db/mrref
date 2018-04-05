@@ -17,10 +17,13 @@ module.exports = {
     let title = results[1];
     let url = results[2];
 
-    return gemsList.updateHeader(title, url).then(() => {
-      let gemsListChannel = msg.channel.guild.channels.find(channel => channel.name === 'gems-list');
-      gemsList.update(gemsListChannel);
-      return msg.channel.createMessage('Gems header updated!');
+    let gemsListChannel = msg.channel.guild.channels.find(channel => channel.name === 'gems-list');
+    return gemsList.updateHeader(gemsListChannel, title, url).then(() => {
+      return msg.channel.createMessage('Gems header updated!').then(resolve => {
+        setTimeout(() => {
+          msg.channel.deleteMessage(resolve.id);
+        }, 10000)
+      });
     });
   }
 };
