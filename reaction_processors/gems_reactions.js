@@ -1,5 +1,5 @@
 'use strict'
-const gemsList = require('./../gems-list.js');
+const gemsList = require('./../gems_list.js');
 
 /**
 * Adds bot uploaded comics to an archive
