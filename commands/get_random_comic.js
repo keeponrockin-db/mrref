@@ -12,7 +12,8 @@ module.exports = {
   shortDescription: 'Get a random comic from my database.',
   longDescription: 'Get a random comic from my database. I will randomly select a comic from among the comics stored when a bot uploads a comic.',
   action(bot, msg, suffix, settings, extension) {
-    return persistence.getGlobalData().then(globalData => {
+    let serverId = msg.channel.guild.id;
+    return persistence.getDataForServer(serverId).then(globalData => {
       if (!globalData.comics) {
         return msg.channel.createMessage('There aren\'t any comics yet :( Use Septapus to make some new comics.');
       }
