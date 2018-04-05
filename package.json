@@ -1,5 +1,5 @@
 {
-  "name": "monochrome_npm_test",
+  "name": "mr-referee",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -10,6 +10,6 @@
   "author": "",
   "license": "Unlicense",
   "dependencies": {
-    "monochrome-bot": "^1.1.0"
+    "moodochrome-bot": "^1.1.0"
   }
 }
