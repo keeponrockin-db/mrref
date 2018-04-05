@@ -1,4 +1,4 @@
-let monochrome = require('monochrome-bot');
+let monochrome = require('moodochrome-bot');
 
 let configFilePath = __dirname + '/config.js';
 let commandsDirectoryPath = __dirname + '/commands';

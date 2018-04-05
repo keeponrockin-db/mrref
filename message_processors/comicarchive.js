@@ -1,5 +1,5 @@
 'use strict'
-const persistence = require('monochrome-bot').persistence;
+const persistence = require('moodochrome-bot').persistence;
 
 /**
 * Adds bot uploaded comics to an archive
