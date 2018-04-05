@@ -10,7 +10,7 @@ module.exports = {
   uniqueId: 'gemheader43187821',
   serverAdminOnly: false,
   shortDescription: 'Add header to the gems list.',
-  usageExample: '$gemheader rev2 https://steamcdn-a.akamaihd.net/steam/apps/631560/header.jpg?t=1496242140',
+  usageExample: '$gemheader rev2 https://steamcdn-a.akamaihd.net/steam/apps/631560/header.jpg',
   action(bot, msg, suffix) {
     let re = /\s*(.*?)\s+(http.*)/i;
     let results = suffix.match(re);
