@@ -22,6 +22,14 @@ class GemsList {
               description: players
             }
           };
+
+          let gemHeaders = globalData['gemHeaders'];
+          if (gemHeaders) {
+            content.embed.image = {
+              url: gemHeaders[gem.title]
+            };
+          }
+
           gemsListChannel.editMessage(gem.messageId, content);
         });
       }
@@ -37,7 +45,7 @@ class GemsList {
       if (!globalData.gems[creator.id]) {
         let content = {
           embed: { 
-            title: 'reserved' 
+            title: 'reserved'
           }
         };
 
@@ -125,6 +133,16 @@ class GemsList {
           this.joinRoom_(gemsListChannel, user, masterId);
         }
       })
+    });
+  }
+
+  static updateHeader(title, url) {
+    return persistence.editGlobalData(globalData => {
+      if (!globalData['gemHeaders']) {
+        globalData['gemHeaders'] = {};
+      }
+      globalData['gemHeaders'][title] = url;
+      return globalData;
     });
   }
 }
