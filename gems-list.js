@@ -97,6 +97,11 @@ class GemsList {
       let gems = globalData['gems'];
       if (!gems[masterId].players[user.id]) {
         gems[masterId].players[user.id] = user;
+        gemsListChannel.createMessage('<@' + masterId + '>: ' + user.username + ' has joined your game.').then(resolve => {
+          setTimeout(() => {
+            gemsListChannel.deleteMessage(resolve.id);
+          }, 10000)
+        });
       } else {
         delete gems[masterId].players[user.id];
       }
