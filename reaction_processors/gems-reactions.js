@@ -10,10 +10,10 @@ module.exports = {
     let gemsListChannel = msg.channel.guild.channels.find(channel => channel.name === 'gems-list');
     switch (emoji.name) {
       case '❌':
-        return gemsList.tryCloseRoom(gemsListChannel, userId, msg.id);
+        return gemsList.closeRoom(gemsListChannel, userId, msg.id);
         break;
       case '🥊':
-        return gemsList.tryJoinRoom(gemsListChannel, userId, msg.id);
+        return gemsList.joinRoom(gemsListChannel, userId, msg.id);
         break;
       default:
     }

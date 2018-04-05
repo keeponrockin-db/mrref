@@ -66,7 +66,7 @@ class GemsList {
     });
   }
 
-  static closeRoom(gemsListChannel, userId) {
+  static closeRoom_(gemsListChannel, userId) {
     persistence.editGlobalData(globalData => {
       let gems = globalData['gems'];
       gemsListChannel.deleteMessage(gems[userId].messageId);
@@ -75,7 +75,7 @@ class GemsList {
     });
   }
 
-  static tryCloseRoom(gemsListChannel, userId, messageId) {
+  static closeRoom(gemsListChannel, userId, messageId) {
     return persistence.getGlobalData().then(globalData => {
       let gems = globalData['gems'];
       if (!gems[userId]) {
@@ -84,7 +84,7 @@ class GemsList {
 
       let isOwner = (gems[userId].messageId === messageId);
       if (isOwner) {
-        this.closeRoom(gemsListChannel, userId);
+        this.closeRoom_(gemsListChannel, userId);
         return true;
       } else {
         return false;
@@ -92,7 +92,7 @@ class GemsList {
     })
   }
 
-  static joinRoom(gemsListChannel, user, masterId) {
+  static joinRoom_(gemsListChannel, user, masterId) {
     persistence.editGlobalData(globalData => {
       let gems = globalData['gems'];
       if (!gems[masterId].players[user.id]) {
@@ -106,7 +106,7 @@ class GemsList {
     });
   }
 
-  static tryJoinRoom(gemsListChannel, userId, messageId) {
+  static joinRoom(gemsListChannel, userId, messageId) {
     return persistence.getGlobalData().then(globalData => {
       let gems = globalData['gems'];
       let user = gemsListChannel.guild.members.find(member => member.id === userId).user;
@@ -117,7 +117,7 @@ class GemsList {
       Object.keys(gems).forEach(masterId => {
         let gem = gems[masterId];
         if (gem.messageId === messageId) {
-          this.joinRoom(gemsListChannel, user, masterId);
+          this.joinRoom_(gemsListChannel, user, masterId);
         }
       })
     });
