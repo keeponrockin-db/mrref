@@ -14,10 +14,9 @@ class GemsList {
             code = '**Code:** ' + gem.code + '\r\n';
           }
 
-          let players = '**Players:**';
+          let players = '**Players:** ';
           Object.keys(gem.players).forEach(playerId => {
-            let player = gem.players[playerId];
-            players += ' ' + player.username + ',';
+            players += ' <@' + playerId + '>,';
           });
           players = players.slice(0, -1);
 
@@ -100,6 +99,12 @@ class GemsList {
     persistence.editGlobalData(globalData => {
       let gems = globalData['gems'];
       gemsListChannel.deleteMessage(gems[userId].messageId);
+      // clean up replies
+      if (gems[userId].replies) {
+        gems[userId].replies.forEach(reply => {
+          gemsListChannel.deleteMessage(reply);
+        });
+      }
       delete gems[userId];
       return globalData;
     });
@@ -127,15 +132,17 @@ class GemsList {
       let gems = globalData['gems'];
       if (!gems[masterId].players[user.id]) {
         gems[masterId].players[user.id] = user;
-        gemsListChannel.createMessage('<@' + masterId + '>: ' + user.username + ' has joined your game.').then(resolve => {
-          setTimeout(() => {
-            gemsListChannel.deleteMessage(resolve.id);
-          }, 10000)
+        return gemsListChannel.createMessage('<@' + masterId + '>: ' + user.username + ' has joined your game.').then(resolve => {
+          if (!gems[masterId].replies) {
+            gems[masterId].replies = [];
+          }
+          gems[masterId].replies.push(resolve.id);
+          return globalData;
         });
       } else {
         delete gems[masterId].players[user.id];
+        return globalData;
       }
-      return globalData;
     }).then(() => {
       this.update(gemsListChannel);
     });
