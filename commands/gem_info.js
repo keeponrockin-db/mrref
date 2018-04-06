@@ -14,7 +14,7 @@ module.exports = {
   action(bot, msg, suffix) {
     let gemsListChannel = msg.channel.guild.channels.find(channel => channel.name === 'gems-list');
     return gemsList.updateInfo(gemsListChannel, msg.author, suffix).then(() => {
-      return msg.channel.createMessage('Gem info updated in #gems-list!').then(resolve => {
+      return msg.channel.createMessage('<#gems-list> updated!').then(resolve => {
         setTimeout(() => {
           msg.channel.deleteMessage(resolve.id);
         }, 10000)
