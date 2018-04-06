@@ -30,9 +30,24 @@ class GemsList {
 
           let gemHeaders = serverData['gemHeaders'];
           if (gemHeaders) {
-            content.embed.image = {
-              url: gemHeaders[gem.title]
-            };
+            Object.keys(gemHeaders).forEach(game => {
+              if (gem.title.includes(game)) {
+                content.embed.image = {
+                  url: gemHeaders[game]
+                };
+              }
+            })
+          }
+
+          let gemIcons = serverData['gemIcons'];
+          if (gemIcons) {
+            Object.keys(gemIcons).forEach(icon => {
+              if (gem.title.includes(icon)) {
+                content.embed.thumbnail = {
+                  url: gemIcons[icon]
+                };
+              }
+            })
           }
 
           gemsListChannel.editMessage(gem.messageId, content);
@@ -172,13 +187,26 @@ class GemsList {
     });
   }
 
-  static updateHeader(gemsListChannel, title, url) {
+  static updateHeader(gemsListChannel, game, url) {
     let serverId = gemsListChannel.guild.id;
     return persistence.editDataForServer(serverId, serverData => {
       if (!serverData['gemHeaders']) {
         serverData['gemHeaders'] = {};
       }
-      serverData['gemHeaders'][title] = url;
+      serverData['gemHeaders'][game] = url;
+      return serverData;
+    }).then(() => {
+      this.update(gemsListChannel);
+    });
+  }
+
+  static updateIcon(gemsListChannel, icon, url) {
+    let serverId = gemsListChannel.guild.id;
+    return persistence.editDataForServer(serverId, serverData => {
+      if (!serverData['gemIcons']) {
+        serverData['gemIcons'] = {};
+      }
+      serverData['gemIcons'][icon] = url;
       return serverData;
     }).then(() => {
       this.update(gemsListChannel);
