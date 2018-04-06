@@ -20,7 +20,7 @@ class GemsList {
           if (gem.players) {
             let players = '';
             Object.keys(gem.players).forEach(playerId => {
-              players += ' <@' + playerId + '>,';
+              players += ' <@!' + playerId + '> (' + gem.players[playerId].username + '),';
             });
             players = players.slice(0, -1);
             content.embed.fields.push({ name: 'Players', value: players });
@@ -156,7 +156,7 @@ class GemsList {
       let gems = serverData['gems'];
       if (!gems[masterId].players[user.id]) {
         gems[masterId].players[user.id] = user;
-        return gemsListChannel.createMessage('<@' + masterId + '>: ' + user.username + ' has joined your game.').then(resolve => {
+        return gemsListChannel.createMessage('<@!' + masterId + '>: ' + user.username + ' has joined your game.').then(resolve => {
           if (!gems[masterId].replies) {
             gems[masterId].replies = [];
           }
