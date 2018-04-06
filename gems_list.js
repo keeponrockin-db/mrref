@@ -10,9 +10,9 @@ class GemsList {
         Object.keys(gems).forEach(userId => {
           let gem = gems[userId];
           
-          let code = '';
-          if (gem.code) {
-            code = '**Code:** ' + gem.code + '\r\n';
+          let info = '';
+          if (gem.info) {
+            info = '**Info:** ' + gem.info + '\r\n';
           }
 
           let players = '**Players:** ';
@@ -24,7 +24,7 @@ class GemsList {
           let content = {
             embed: {
               title: gem.title,
-              description: code + players
+              description: info + players
             }
           };
 
@@ -80,7 +80,7 @@ class GemsList {
     });
   }
 
-  static updateCode(gemsListChannel, creator, code) {
+  static updateInfo(gemsListChannel, creator, info) {
     let serverId = gemsListChannel.guild.id;
     return persistence.editDataForServer(serverId, serverData => {
       if (!serverData.gems) {
@@ -91,7 +91,7 @@ class GemsList {
         return false;
       }
 
-      serverData.gems[creator.id].code = code;
+      serverData.gems[creator.id].info = info;
       return serverData;
     }).then(() => {
       this.update(gemsListChannel);
