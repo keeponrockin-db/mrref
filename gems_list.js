@@ -9,24 +9,26 @@ class GemsList {
       if (gems) {
         Object.keys(gems).forEach(userId => {
           let gem = gems[userId];
-          
-          let info = '';
-          if (gem.info) {
-            info = '**Info:** ' + gem.info + '\r\n';
-          }
-
-          let players = '**Players:** ';
-          Object.keys(gem.players).forEach(playerId => {
-            players += ' <@' + playerId + '>,';
-          });
-          players = players.slice(0, -1);
 
           let content = {
             embed: {
               title: gem.title,
-              description: info + players
+              fields: []
             }
           };
+
+          if (gem.players) {
+            let players = '';
+            Object.keys(gem.players).forEach(playerId => {
+              players += ' <@' + playerId + '>,';
+            });
+            players = players.slice(0, -1);
+            content.embed.fields.push({ name: 'Players', value: players });
+          }
+
+          if (gem.info) {
+            content.embed.fields.push({ name: 'Info', value: gem.info });
+          }
 
           let gemHeaders = serverData['gemHeaders'];
           if (gemHeaders) {
@@ -50,6 +52,7 @@ class GemsList {
             })
           }
 
+          console.log(content);
           gemsListChannel.editMessage(gem.messageId, content);
         });
       }
