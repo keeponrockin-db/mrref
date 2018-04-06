@@ -136,6 +136,21 @@ class GemsList {
     let serverId = gemsListChannel.guild.id;
     return persistence.getDataForServer(serverId).then(serverData => {
       let gems = serverData['gems'];
+
+      let user = gemsListChannel.guild.members.find(user => user.id === userId);
+      let isAdmin = user.permission.json.manageMessages;
+
+      if (isAdmin) {
+        Object.keys(gems).forEach(playerId => {
+          if (gems[playerId]) {
+            if (gems[playerId].messageId === messageId) {
+              this.closeRoom_(gemsListChannel, playerId);
+              return true;
+            }
+          }
+        })
+      }
+
       if (!gems[userId]) {
         return false;
       }
