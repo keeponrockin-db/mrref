@@ -5,7 +5,7 @@ const persistence = require('moodochrome-bot').persistence;
 * Demonstrates getting persisted data.
 */
 module.exports = {
-  commandAliases: ['$comic'],
+  commandAliases: ['!comic'],
   canBeChannelRestricted: false,
   serverAdminOnly: false,
   uniqueId: 'getComic70327',
