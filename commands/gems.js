@@ -15,7 +15,7 @@ module.exports = {
     let title = suffix;
     let gemsListChannel = msg.channel.guild.channels.find(channel => channel.name === 'gems-list');
     return gemsList.updateRoom(gemsListChannel, msg.author, title).then(() => {
-      return msg.channel.createMessage('Gems list updated in #gems-list!');
+      return msg.channel.createMessage(gemsListChannel.mention + ' updated!');
     });
   }
 };
