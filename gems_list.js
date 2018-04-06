@@ -52,7 +52,6 @@ class GemsList {
             })
           }
 
-          console.log(content);
           gemsListChannel.editMessage(gem.messageId, content);
         });
       }
