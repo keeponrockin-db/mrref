@@ -5,18 +5,18 @@ const gemsList = require('./../gems_list.js');
 * Demonstrates persisting data.
 */
 module.exports = {
-  commandAliases: ['!gemheader'],
+  commandAliases: ['!gemicon'],
   canBeChannelRestricted: true,
-  uniqueId: 'gemheader43187821',
+  uniqueId: 'gemicon12511137',
   serverAdminOnly: false,
-  shortDescription: 'Add header to the gems list.',
-  usageExample: '!gemheader rev2 https://steamcdn-a.akamaihd.net/steam/apps/631560/header.jpg',
+  shortDescription: 'Add icon to the gems list.',
+  usageExample: '!gemicon steam https://pbs.twimg.com/profile_images/887778636102721536/Nxgl7xz4.jpg',
   action(bot, msg, suffix) {
     let re = /\s*(.*?)\s+(http.*)/i;
     let results = suffix.match(re);
 
     if (!results) {
-      return msg.channel.createMessage('Invalid header').then(resolve => {
+      return msg.channel.createMessage('Invalid icon').then(resolve => {
         setTimeout(() => {
           msg.channel.deleteMessage(resolve.id);
         }, 10000)
@@ -27,8 +27,8 @@ module.exports = {
     let url = results[2];
 
     let gemsListChannel = msg.channel.guild.channels.find(channel => channel.name === 'gems-list');
-    return gemsList.updateHeader(gemsListChannel, title, url).then(() => {
-      return msg.channel.createMessage('Gems header updated!').then(resolve => {
+    return gemsList.updateIcon(gemsListChannel, title, url).then(() => {
+      return msg.channel.createMessage('Gems icon updated!').then(resolve => {
         setTimeout(() => {
           msg.channel.deleteMessage(resolve.id);
         }, 10000)

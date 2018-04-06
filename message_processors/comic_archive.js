@@ -10,12 +10,13 @@ module.exports = {
     let attachment = msg.attachments[0];
     if (msg.author.bot && attachment) {
       if (attachment.filename === 'comic.png') {
-        return persistence.editGlobalData(globalData => {
-          if (!globalData.comics) {
-            globalData.comics = [];
+        let serverId = msg.channel.guild.id;
+        return persistence.editDataForServer(serverId, serverData => {
+          if (!serverData.comics) {
+            serverData.comics = [];
           }
-          globalData.comics.push(attachment.url);
-          return globalData;
+          serverData.comics.push(attachment.url);
+          return serverData;
         });
       }
       return true;
