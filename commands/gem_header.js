@@ -26,8 +26,7 @@ module.exports = {
     let title = results[1];
     let url = results[2];
 
-    let gemsListChannel = msg.channel.guild.channels.find(channel => channel.name === 'gems-list');
-    return gemsList.updateHeader(gemsListChannel, title, url).then(() => {
+    return gemsList.updateHeader(msg.channel.guild, title, url).then(() => {
       return msg.channel.createMessage('Gems header updated!').then(resolve => {
         setTimeout(() => {
           msg.channel.deleteMessage(msg.id);

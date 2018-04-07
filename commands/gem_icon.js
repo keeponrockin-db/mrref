@@ -26,8 +26,7 @@ module.exports = {
     let title = results[1];
     let url = results[2];
 
-    let gemsListChannel = msg.channel.guild.channels.find(channel => channel.name === 'gems-list');
-    return gemsList.updateIcon(gemsListChannel, title, url).then(() => {
+    return gemsList.updateIcon(msg.channel.guild, title, url).then(() => {
       return msg.channel.createMessage('Gems icon updated!').then(resolve => {
         setTimeout(() => {
           msg.channel.deleteMessage(msg.id);

@@ -2,7 +2,22 @@
 const persistence = require('moodochrome-bot').persistence;
 
 class GemsList {
-  static update(gemsListChannel) {
+  static setChannel(server, channel) {
+    return persistence.editDataForServer(server.id, serverData => {
+      serverData['gemsChannel'] = channel;
+      return serverData;
+    });
+  }
+
+  static getChannel(server) {
+    return persistence.getDataForServer(server.id).then(serverData => {
+      let channelName = serverData['gemsChannel'];
+      console.log(channelName);
+      return server.channels.find(channel => channel.name === channelName);
+    });
+  }
+
+  static update_(gemsListChannel) {
     let serverId = gemsListChannel.guild.id;
     persistence.getDataForServer(serverId).then(serverData => {
       let gems = serverData['gems'];
@@ -23,7 +38,9 @@ class GemsList {
               players += ' <@!' + playerId + '> (' + gem.players[playerId].username + '),';
             });
             players = players.slice(0, -1);
-            content.embed.fields.push({ name: 'Players', value: players });
+            if (players) {
+              content.embed.fields.push({ name: 'Players', value: players });
+            }
           }
 
           if (gem.info) {
@@ -58,60 +75,62 @@ class GemsList {
     });
   }
 
-  static updateRoom(gemsListChannel, creator, title) {
-    let serverId = gemsListChannel.guild.id;
-    return persistence.editDataForServer(serverId, serverData => {
-      if (!serverData.gems) {
-        serverData.gems = {};
-      }
-
-      if (!serverData.gems[creator.id]) {
-        let content = {
-          embed: { 
-            title: 'reserved'
-          }
-        };
-
-        return gemsListChannel.createMessage(content).then(resolve => {
-          gemsListChannel.addMessageReaction(resolve.id, '🥊');
-          gemsListChannel.addMessageReaction(resolve.id, '❌');
-
-          let gem = {
-            title: title, 
-            players: {}, 
-            messageId: resolve.id
+  static updateRoom(server, creator, title) {
+    return this.getChannel(server).then(channel => {
+      return persistence.editDataForServer(server.id, serverData => {
+        if (!serverData.gems) {
+          serverData.gems = {};
+        }
+  
+        if (!serverData.gems[creator.id]) {
+          let content = {
+            embed: { 
+              title: 'reserved'
+            }
           };
-
-          gem.players[creator.id] = creator;
-
-          serverData.gems[creator.id] = gem;
-          return serverData;
-        });
-      } else {
-        serverData.gems[creator.id].title = title;
-      }
-      
-      return serverData;
-    }).then(() => {
-      this.update(gemsListChannel);
+  
+          return channel.createMessage(content).then(resolve => {
+            channel.addMessageReaction(resolve.id, '🥊');
+            channel.addMessageReaction(resolve.id, '❌');
+  
+            let gem = {
+              title: title, 
+              players: {}, 
+              messageId: resolve.id
+            };
+  
+            gem.players[creator.id] = creator;
+  
+            serverData.gems[creator.id] = gem;
+            return serverData;
+          });
+        } else {
+          serverData.gems[creator.id].title = title;
+        }
+        
+        return serverData;
+      }).then(() => {
+        this.update_(channel);
+      });
     });
   }
 
-  static updateInfo(gemsListChannel, creator, info) {
-    let serverId = gemsListChannel.guild.id;
-    return persistence.editDataForServer(serverId, serverData => {
-      if (!serverData.gems) {
+  static updateInfo(server, creator, info) {
+    return this.getChannel(server).then(channel => {
+      return persistence.editDataForServer(server.id, serverData => {
+        if (!serverData.gems) {
+          return serverData;
+        }
+  
+        if (!serverData.gems[creator.id]) {
+          return serverData;
+        }
+  
+        serverData.gems[creator.id].info = info;
         return serverData;
-      }
-
-      if (!serverData.gems[creator.id]) {
-        return serverData;
-      }
-
-      serverData.gems[creator.id].info = info;
-      return serverData;
-    }).then(() => {
-      this.update(gemsListChannel);
+      }).then(() => {
+        this.update_(channel);
+      });
     });
   }
 
@@ -131,37 +150,38 @@ class GemsList {
     });
   }
 
-  static closeRoom(gemsListChannel, userId, messageId) {
-    let serverId = gemsListChannel.guild.id;
-    return persistence.getDataForServer(serverId).then(serverData => {
-      let gems = serverData['gems'];
-
-      let user = gemsListChannel.guild.members.find(user => user.id === userId);
-      let isAdmin = user.permission.json.manageMessages;
-
-      if (isAdmin) {
-        Object.keys(gems).forEach(playerId => {
-          if (gems[playerId]) {
-            if (gems[playerId].messageId === messageId) {
-              this.closeRoom_(gemsListChannel, playerId);
-              return true;
+  static closeRoom(server, userId, messageId) {
+    return this.getChannel(server).then(channel => {
+      return persistence.getDataForServer(server.id).then(serverData => {
+        let gems = serverData['gems'];
+  
+        let user = server.members.find(user => user.id === userId);
+        let isAdmin = user.permission.json.manageMessages;
+  
+        if (isAdmin) {
+          Object.keys(gems).forEach(playerId => {
+            if (gems[playerId]) {
+              if (gems[playerId].messageId === messageId) {
+                this.closeRoom_(channel, playerId);
+                return true;
+              }
             }
-          }
-        })
-      }
-
-      if (!gems[userId]) {
-        return false;
-      }
-
-      let isOwner = (gems[userId].messageId === messageId);
-      if (isOwner) {
-        this.closeRoom_(gemsListChannel, userId);
-        return true;
-      } else {
-        return false;
-      }
-    })
+          })
+        }
+  
+        if (!gems[userId]) {
+          return false;
+        }
+  
+        let isOwner = (gems[userId].messageId === messageId);
+        if (isOwner) {
+          this.closeRoom_(channel, userId);
+          return true;
+        } else {
+          return false;
+        }
+      })
+    });
   }
 
   static joinRoom_(gemsListChannel, user, masterId) {
@@ -170,7 +190,7 @@ class GemsList {
       let gems = serverData['gems'];
       if (!gems[masterId].players[user.id]) {
         gems[masterId].players[user.id] = user;
-        return gemsListChannel.createMessage('<@!' + masterId + '>: ' + user.username + ' wants to joined your game.').then(resolve => {
+        return gemsListChannel.createMessage('<@!' + masterId + '>: ' + user.username + ' wants to join your game.').then(resolve => {
           if (!gems[masterId].replies) {
             gems[masterId].replies = [];
           }
@@ -182,51 +202,54 @@ class GemsList {
         return serverData;
       }
     }).then(() => {
-      this.update(gemsListChannel);
+      this.update_(gemsListChannel);
     });
   }
 
-  static joinRoom(gemsListChannel, userId, messageId) {
-    let serverId = gemsListChannel.guild.id;
-    return persistence.getDataForServer(serverId).then(serverData => {
-      let gems = serverData['gems'];
-      let user = gemsListChannel.guild.members.find(member => member.id === userId).user;
-      if (user.bot) {
-        return false;
-      }
-
-      Object.keys(gems).forEach(masterId => {
-        let gem = gems[masterId];
-        if (gem.messageId === messageId) {
-          this.joinRoom_(gemsListChannel, user, masterId);
+  static joinRoom(server, userId, messageId) {
+    return this.getChannel(server).then(channel => {
+      return persistence.getDataForServer(server.id).then(serverData => {
+        let gems = serverData['gems'];
+        let user = server.members.find(member => member.id === userId).user;
+        if (user.bot) {
+          return false;
         }
-      })
+  
+        Object.keys(gems).forEach(masterId => {
+          let gem = gems[masterId];
+          if (gem.messageId === messageId) {
+            this.joinRoom_(channel, user, masterId);
+          }
+        })
+      });
     });
   }
 
-  static updateHeader(gemsListChannel, game, url) {
-    let serverId = gemsListChannel.guild.id;
-    return persistence.editDataForServer(serverId, serverData => {
-      if (!serverData['gemHeaders']) {
-        serverData['gemHeaders'] = {};
-      }
-      serverData['gemHeaders'][game] = url;
-      return serverData;
-    }).then(() => {
-      this.update(gemsListChannel);
+  static updateHeader(server, game, url) {
+    return this.getChannel(server).then(channel => {
+      return persistence.editDataForServer(server.id, serverData => {
+        if (!serverData['gemHeaders']) {
+          serverData['gemHeaders'] = {};
+        }
+        serverData['gemHeaders'][game] = url;
+        return serverData;
+      }).then(() => {
+        this.update_(channel);
+      });
     });
   }
 
-  static updateIcon(gemsListChannel, icon, url) {
-    let serverId = gemsListChannel.guild.id;
-    return persistence.editDataForServer(serverId, serverData => {
-      if (!serverData['gemIcons']) {
-        serverData['gemIcons'] = {};
-      }
-      serverData['gemIcons'][icon] = url;
-      return serverData;
-    }).then(() => {
-      this.update(gemsListChannel);
+  static updateIcon(server, icon, url) {
+    return this.getChannel(server).then(channel => {
+      return persistence.editDataForServer(server.id, serverData => {
+        if (!serverData['gemIcons']) {
+          serverData['gemIcons'] = {};
+        }
+        serverData['gemIcons'][icon] = url;
+        return serverData;
+      }).then(() => {
+        this.update_(channel);
+      });
     });
   }
 }
