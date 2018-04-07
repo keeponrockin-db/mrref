@@ -2,7 +2,7 @@
 const gemsList = require('./../gems_list.js');
 
 /**
-* Demonstrates persisting data.
+* Initializes the channel for gems list
 */
 module.exports = {
   commandAliases: ['!gemschannel'],

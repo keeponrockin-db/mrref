@@ -2,7 +2,7 @@
 const gemsList = require('./../gems_list.js');
 
 /**
-* Demonstrates persisting data.
+* Changes main game visual for listed games
 */
 module.exports = {
   commandAliases: ['!gemheader'],

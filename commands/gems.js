@@ -2,7 +2,7 @@
 const gemsList = require('./../gems_list.js');
 
 /**
-* Demonstrates persisting data.
+* List new entry or update old one on gems list
 */
 module.exports = {
   commandAliases: ['!gems'],

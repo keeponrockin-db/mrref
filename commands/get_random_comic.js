@@ -2,7 +2,7 @@
 const persistence = require('moodochrome-bot').persistence;
 
 /**
-* Demonstrates getting persisted data.
+* Spits out a comic archived by comic archive
 */
 module.exports = {
   commandAliases: ['!comic'],
