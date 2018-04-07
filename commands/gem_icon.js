@@ -16,11 +16,7 @@ module.exports = {
     let results = suffix.match(re);
 
     if (!results) {
-      return msg.channel.createMessage('Invalid icon').then(resolve => {
-        setTimeout(() => {
-          msg.channel.deleteMessage(resolve.id);
-        }, 10000)
-      });
+      return msg.channel.createMessage('Invalid icon');
     }
 
     let title = results[1];
