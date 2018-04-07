@@ -13,9 +13,15 @@ module.exports = {
   usageExample: '!gems steam xrd',
   action(bot, msg, suffix) {
     let title = suffix;
-    let gemsListChannel = msg.channel.guild.channels.find(channel => channel.name === 'gems-list');
-    return gemsList.updateRoom(gemsListChannel, msg.author, title).then(() => {
-      return msg.channel.createMessage(gemsListChannel.mention + ' updated!');
+    return gemsList.getChannel(msg.channel.guild).then(channel => {
+      return gemsList.updateRoom(msg.channel.guild, msg.author, title).then(() => {
+        return msg.channel.createMessage(channel.mention + ' updated!').then(resolve => {
+          setTimeout(() => {
+            msg.channel.deleteMessage(msg.id);
+            msg.channel.deleteMessage(resolve.id);
+          }, 10000)
+        });
+      });
     });
   }
 };

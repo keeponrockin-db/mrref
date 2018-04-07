@@ -12,12 +12,14 @@ module.exports = {
   shortDescription: 'Add info to the gem.',
   usageExample: '!geminfo Search ID: j8c7',
   action(bot, msg, suffix) {
-    let gemsListChannel = msg.channel.guild.channels.find(channel => channel.name === 'gems-list');
-    return gemsList.updateInfo(gemsListChannel, msg.author, suffix).then(() => {
-      return msg.channel.createMessage('<#gems-list> updated!').then(resolve => {
-        setTimeout(() => {
-          msg.channel.deleteMessage(resolve.id);
-        }, 10000)
+    return gemsList.getChannel(msg.channel.guild).then(channel => {
+      return gemsList.updateInfo(msg.channel.guild, msg.author, suffix).then(() => {
+        return msg.channel.createMessage(channel.mention + ' updated!').then(resolve => {
+          setTimeout(() => {
+            msg.channel.deleteMessage(msg.id);
+            msg.channel.deleteMessage(resolve.id);
+          }, 10000)
+        });
       });
     });
   }

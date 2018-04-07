@@ -16,20 +16,16 @@ module.exports = {
     let results = suffix.match(re);
 
     if (!results) {
-      return msg.channel.createMessage('Invalid icon').then(resolve => {
-        setTimeout(() => {
-          msg.channel.deleteMessage(resolve.id);
-        }, 10000)
-      });
+      return msg.channel.createMessage('Invalid icon');
     }
 
     let title = results[1];
     let url = results[2];
 
-    let gemsListChannel = msg.channel.guild.channels.find(channel => channel.name === 'gems-list');
-    return gemsList.updateIcon(gemsListChannel, title, url).then(() => {
+    return gemsList.updateIcon(msg.channel.guild, title, url).then(() => {
       return msg.channel.createMessage('Gems icon updated!').then(resolve => {
         setTimeout(() => {
+          msg.channel.deleteMessage(msg.id);
           msg.channel.deleteMessage(resolve.id);
         }, 10000)
       });
