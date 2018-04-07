@@ -14,15 +14,16 @@ module.exports = {
   action(bot, msg, suffix, settings, extension) {
     let serverId = msg.channel.guild.id;
     return persistence.getDataForServer(serverId).then(serverData => {
-      if (!serverData.comics) {
+      if (!serverData['comics']) {
         return msg.channel.createMessage('There aren\'t any comics yet :( Use Septapus to make some new comics.');
       }
+      let comics = serverData['comics'];
 
-      let comicIndex = Math.floor(Math.random() * serverData.comics.length);
+      let comicIndex = Math.floor(Math.random() * comics.length);
       if (extension === '-newest') {
-        comicIndex = serverData.comics.length - 1;
+        comicIndex = comics.length - 1;
       }
-      return msg.channel.createMessage(serverData.comics[comicIndex]);
+      return msg.channel.createMessage(comics[comicIndex]);
     });
   },
   canHandleExtension(extension) {

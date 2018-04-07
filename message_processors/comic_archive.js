@@ -12,10 +12,11 @@ module.exports = {
       if (attachment.filename === 'comic.png') {
         let serverId = msg.channel.guild.id;
         return persistence.editDataForServer(serverId, serverData => {
-          if (!serverData.comics) {
-            serverData.comics = [];
+          if (!serverData['comics']) {
+            serverData['comics'] = [];
           }
-          serverData.comics.push(attachment.url);
+          let comics = serverData['comics'];
+          comics.push(attachment.url);
           return serverData;
         });
       }
