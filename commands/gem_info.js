@@ -2,7 +2,7 @@
 const gemsList = require('./../gems_list.js');
 
 /**
-* Demonstrates persisting data.
+* Allows users to append other data
 */
 module.exports = {
   commandAliases: ['!geminfo'],
@@ -14,11 +14,11 @@ module.exports = {
   action(bot, msg, suffix) {
     return gemsList.getChannel(msg.channel.guild).then(channel => {
       return gemsList.updateInfo(msg.channel.guild, msg.author, suffix).then(() => {
-        return msg.channel.createMessage(channel.mention + ' updated!').then(resolve => {
+        return msg.channel.createMessage(channel.mention + ' updated!').then(response => {
           setTimeout(() => {
             msg.channel.deleteMessage(msg.id);
-            msg.channel.deleteMessage(resolve.id);
-          }, 10000)
+            msg.channel.deleteMessage(response.id);
+          }, 10000);
         });
       });
     });

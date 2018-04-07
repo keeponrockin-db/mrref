@@ -2,7 +2,7 @@
 const gemsList = require('./../gems_list.js');
 
 /**
-* Demonstrates persisting data.
+* Initializes the channel for gems list
 */
 module.exports = {
   commandAliases: ['!gemschannel'],
@@ -13,11 +13,11 @@ module.exports = {
   usageExample: '!gemschannel netplaying',
   action(bot, msg, suffix) {
     gemsList.setChannel(msg.channel.guild, suffix).then(() => {
-      return msg.channel.createMessage('Gems channel updated!').then(resolve => {
+      return msg.channel.createMessage('Gems channel updated!').then(response => {
         setTimeout(() => {
           msg.channel.deleteMessage(msg.id);
-          msg.channel.deleteMessage(resolve.id);
-        }, 10000)
+          msg.channel.deleteMessage(response.id);
+        }, 10000);
       });
     });
   }

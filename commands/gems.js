@@ -2,7 +2,7 @@
 const gemsList = require('./../gems_list.js');
 
 /**
-* Demonstrates persisting data.
+* List new entry or update old one on gems list
 */
 module.exports = {
   commandAliases: ['!gems'],
@@ -15,11 +15,11 @@ module.exports = {
     let title = suffix;
     return gemsList.getChannel(msg.channel.guild).then(channel => {
       return gemsList.updateRoom(msg.channel.guild, msg.author, title).then(() => {
-        return msg.channel.createMessage(channel.mention + ' updated!').then(resolve => {
+        return msg.channel.createMessage(channel.mention + ' updated!').then(response => {
           setTimeout(() => {
             msg.channel.deleteMessage(msg.id);
-            msg.channel.deleteMessage(resolve.id);
-          }, 10000)
+            msg.channel.deleteMessage(response.id);
+          }, 10000);
         });
       });
     });
