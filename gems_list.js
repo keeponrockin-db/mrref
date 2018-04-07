@@ -170,7 +170,7 @@ class GemsList {
       let gems = serverData['gems'];
       if (!gems[masterId].players[user.id]) {
         gems[masterId].players[user.id] = user;
-        return gemsListChannel.createMessage('<@!' + masterId + '>: ' + user.username + ' has joined your game.').then(resolve => {
+        return gemsListChannel.createMessage('<@!' + masterId + '>: ' + user.username + ' wants to joined your game.').then(resolve => {
           if (!gems[masterId].replies) {
             gems[masterId].replies = [];
           }
