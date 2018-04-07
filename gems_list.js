@@ -101,11 +101,11 @@ class GemsList {
     let serverId = gemsListChannel.guild.id;
     return persistence.editDataForServer(serverId, serverData => {
       if (!serverData.gems) {
-        return false;
+        return serverData;
       }
 
       if (!serverData.gems[creator.id]) {
-        return false;
+        return serverData;
       }
 
       serverData.gems[creator.id].info = info;
