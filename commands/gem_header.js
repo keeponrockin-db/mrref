@@ -23,11 +23,11 @@ module.exports = {
     let url = results[2];
 
     return gemsList.updateHeader(msg.channel.guild, title, url).then(() => {
-      return msg.channel.createMessage('Gems header updated!').then(resolve => {
+      return msg.channel.createMessage('Gems header updated!').then(response => {
         setTimeout(() => {
           msg.channel.deleteMessage(msg.id);
-          msg.channel.deleteMessage(resolve.id);
-        }, 10000)
+          msg.channel.deleteMessage(response.id);
+        }, 10000);
       });
     });
   }
