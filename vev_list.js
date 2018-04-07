@@ -49,9 +49,7 @@ class GemsList {
       vevList[userId][channel.id] = Date.now() + sentenceLength;
       
       setTimeout(() => {
-        if (Date.now() >= vevList[userId][channel.id]) {
-          this.unvev(userId, channel);
-        }
+        this.unvev(userId, channel);
       }, sentenceLength);
   
       channel.editPermission(userId, null, 2048, 'member');
