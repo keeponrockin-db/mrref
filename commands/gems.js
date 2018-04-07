@@ -17,6 +17,7 @@ module.exports = {
     return gemsList.updateRoom(gemsListChannel, msg.author, title).then(() => {
       return msg.channel.createMessage(gemsListChannel.mention + ' updated!').then(resolve => {
         setTimeout(() => {
+          msg.channel.deleteMessage(msg.id);
           msg.channel.deleteMessage(resolve.id);
         }, 10000)
       });

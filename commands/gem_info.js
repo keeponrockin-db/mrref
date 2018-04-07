@@ -16,6 +16,7 @@ module.exports = {
     return gemsList.updateInfo(gemsListChannel, msg.author, suffix).then(() => {
       return msg.channel.createMessage('<#gems-list> updated!').then(resolve => {
         setTimeout(() => {
+          msg.channel.deleteMessage(msg.id);
           msg.channel.deleteMessage(resolve.id);
         }, 10000)
       });

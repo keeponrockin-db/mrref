@@ -30,6 +30,7 @@ module.exports = {
     return gemsList.updateHeader(gemsListChannel, title, url).then(() => {
       return msg.channel.createMessage('Gems header updated!').then(resolve => {
         setTimeout(() => {
+          msg.channel.deleteMessage(msg.id);
           msg.channel.deleteMessage(resolve.id);
         }, 10000)
       });
