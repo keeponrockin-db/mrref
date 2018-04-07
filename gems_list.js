@@ -230,12 +230,11 @@ class GemsList {
       if (!gems[masterId].players[user.id]) {
         gems[masterId].players[user.id] = user;
         return gemsListChannel.createMessage('<@!' + masterId + '>: ' + user.username + ' wants to join your game.').then(message => {
-          if (!gems[masterId].replies) {
-            gems[masterId].replies = [];
+          if (!gems[masterId]['replies']) {
+            gems[masterId]['replies'] = [];
           }
-          gems[masterId].replies.push(message.id);
+          gems[masterId]['replies'].push(message.id);
           this.addNetplayerRole(server, user.id);
-          msg.channel.deleteMessage(msg.id);
           return serverData;
         });
       } else {
