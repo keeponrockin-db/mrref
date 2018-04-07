@@ -113,7 +113,28 @@ class GemsList {
             };
   
             gem.players[creator.id] = creator;
-  
+
+            let re = /.*?(\d+(?:\.\d+)?)\s*(h|m).*/i;
+            let results = title.match(re);
+        
+            if (results) {
+              let expiry = results[1];
+              let timeUnit = results[2];
+              switch (timeUnit) {
+                case 'm':
+                  expiry = expiry * 1000 * 60;
+                  break;
+                case 'h':
+                  expiry = expiry * 1000 * 60 * 60;
+                  break;
+                default:
+              }
+              
+              setTimeout(() => {
+                this.closeRoom(server, creator.id, message.id);
+              }, expiry);
+            }
+
             serverData.gems[creator.id] = gem;
             return serverData;
           });
