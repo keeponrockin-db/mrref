@@ -44,6 +44,8 @@ class GemsList {
             }
           };
 
+          content.embed.fields.push({ name: 'Creator', value: '<@!' + gem['creator'].id + '> (' + gem['creator'].username + ')' });
+
           if (gem.players) {
             let players = '';
             Object.keys(gem.players).forEach(playerId => {
@@ -107,18 +109,20 @@ class GemsList {
             channel.addMessageReaction(message.id, '❌');
   
             let gem = {
-              title: title, 
+              creator: creator,
+              title: title,
               players: {}, 
               messageId: message.id
             };
-  
+
             gem.players[creator.id] = creator;
 
+            let expiry = 3 * 1000 * 60 * 60;
             let re = /.*?(\d+(?:\.\d+)?)\s*(h|m).*/i;
             let results = title.match(re);
-        
+
             if (results) {
-              let expiry = results[1];
+              expiry = results[1];
               let timeUnit = results[2];
               switch (timeUnit) {
                 case 'm':
