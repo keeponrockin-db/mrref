@@ -111,6 +111,10 @@ class GemsList {
   static points(server, userId) {
     return persistence.getDataForServer(server.id).then(serverData => {
       let points = serverData['vevPoints'];
+      if (!points) {
+        points = {};
+      }
+
       if (!points[userId] && points[userId] !== 0) {
         points[userId] = 420;
       }
