@@ -126,7 +126,7 @@ class GemsList {
               }
               
               setTimeout(() => {
-                this.closeRoom(server, creator.id, message.id);
+                this.removeExpiredGems(server);
               }, expiry);
             }
 
@@ -139,12 +139,34 @@ class GemsList {
             };
 
             gem.players[creator.id] = creator;
-
             serverData.gems[creator.id] = gem;
             return serverData;
           });
         } else {
+          let expiry = 3 * 1000 * 60 * 60;
+          let re = /.*?(\d+(?:\.\d+)?)\s*(h|m).*/i;
+          let results = title.match(re);
+
+          if (results) {
+            expiry = results[1];
+            let timeUnit = results[2];
+            switch (timeUnit) {
+              case 'm':
+                expiry = expiry * 1000 * 60;
+                break;
+              case 'h':
+                expiry = expiry * 1000 * 60 * 60;
+                break;
+              default:
+            }
+            
+            setTimeout(() => {
+              this.removeExpiredGems(server);
+            }, expiry);
+
           serverData.gems[creator.id].title = title;
+          serverData.gems[creator.id].expiry = expiry;
+          }
         }
         
         return serverData;
