@@ -107,15 +107,6 @@ class GemsList {
             this.addNetplayerRole(server, creator.id);
             channel.addMessageReaction(message.id, '🥊');
             channel.addMessageReaction(message.id, '❌');
-  
-            let gem = {
-              creator: creator,
-              title: title,
-              players: {}, 
-              messageId: message.id
-            };
-
-            gem.players[creator.id] = creator;
 
             let expiry = 3 * 1000 * 60 * 60;
             let re = /.*?(\d+(?:\.\d+)?)\s*(h|m).*/i;
@@ -135,15 +126,47 @@ class GemsList {
               }
               
               setTimeout(() => {
-                this.closeRoom(server, creator.id, message.id);
+                this.removeExpiredGems(server);
               }, expiry);
             }
 
+            let gem = {
+              creator: creator,
+              expiry: expiry + Date.now(),
+              title: title,
+              players: {}, 
+              messageId: message.id
+            };
+
+            gem.players[creator.id] = creator;
             serverData.gems[creator.id] = gem;
             return serverData;
           });
         } else {
+          let expiry = 3 * 1000 * 60 * 60;
+          let re = /.*?(\d+(?:\.\d+)?)\s*(h|m).*/i;
+          let results = title.match(re);
+
+          if (results) {
+            expiry = results[1];
+            let timeUnit = results[2];
+            switch (timeUnit) {
+              case 'm':
+                expiry = expiry * 1000 * 60;
+                break;
+              case 'h':
+                expiry = expiry * 1000 * 60 * 60;
+                break;
+              default:
+            }
+            
+            setTimeout(() => {
+              this.removeExpiredGems(server);
+            }, expiry);
+
           serverData.gems[creator.id].title = title;
+          serverData.gems[creator.id].expiry = expiry;
+          }
         }
         
         return serverData;
@@ -168,6 +191,22 @@ class GemsList {
         return serverData;
       }).then(() => {
         this.update_(server, channel);
+      });
+    });
+  }
+
+  static removeExpiredGems(server) {
+    return this.getChannel(server).then(channel => {
+      return persistence.getDataForServer(server.id).then(serverData => {
+        let gems = serverData['gems'];
+        if (gems) {
+          Object.keys(gems).forEach(creatorId => {
+            let gem = gems[creatorId];
+            if (Date.now() >= gem.expiry) {
+              this.closeRoom_(server, channel, creatorId);
+            }
+          });
+        }
       });
     });
   }
