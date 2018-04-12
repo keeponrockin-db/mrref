@@ -1,5 +1,5 @@
 'use strict'
-const vevList = require('./../vev_list.js');
+const vevList = require('./../vev_list.js')
 
 module.exports = {
   commandAliases: ['!points'],
@@ -8,9 +8,9 @@ module.exports = {
   serverAdminOnly: false,
   shortDescription: 'Report points',
   usageExample: '!points',
-  action(bot, msg, suffix) {
+  action (bot, msg, suffix) {
     vevList.points(msg.channel.guild, msg.author.id).then(points => {
-      return msg.channel.createMessage('Points: ' + points);
-    });
+      return msg.channel.createMessage('Points: ' + points)
+    })
   }
-};
+}

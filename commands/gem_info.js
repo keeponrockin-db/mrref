@@ -1,5 +1,5 @@
 'use strict'
-const gemsList = require('./../gems_list.js');
+const gemsList = require('./../gems_list.js')
 
 /**
 * Allows users to append other data
@@ -11,16 +11,16 @@ module.exports = {
   serverAdminOnly: false,
   shortDescription: 'Add info to the gem.',
   usageExample: '!geminfo Search ID: j8c7',
-  action(bot, msg, suffix) {
+  action (bot, msg, suffix) {
     return gemsList.getChannel(msg.channel.guild).then(channel => {
       return gemsList.updateInfo(msg.channel.guild, msg.author, suffix).then(() => {
         return msg.channel.createMessage(channel.mention + ' updated!').then(response => {
           setTimeout(() => {
-            msg.channel.deleteMessage(msg.id);
-            msg.channel.deleteMessage(response.id);
-          }, 10000);
-        });
-      });
-    });
+            msg.channel.deleteMessage(msg.id)
+            msg.channel.deleteMessage(response.id)
+          }, 10000)
+        })
+      })
+    })
   }
-};
+}

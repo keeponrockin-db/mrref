@@ -1,5 +1,5 @@
 'use strict'
-const gemsList = require('./../gems_list.js');
+const gemsList = require('./../gems_list.js')
 
 /**
 * Initializes the channel for gems list
@@ -11,14 +11,14 @@ module.exports = {
   serverAdminOnly: false,
   shortDescription: 'Set channel',
   usageExample: '!gemschannel netplaying',
-  action(bot, msg, suffix) {
+  action (bot, msg, suffix) {
     gemsList.setChannel(msg.channel.guild, suffix).then(() => {
       return msg.channel.createMessage('Gems channel updated!').then(response => {
         setTimeout(() => {
-          msg.channel.deleteMessage(msg.id);
-          msg.channel.deleteMessage(response.id);
-        }, 10000);
-      });
-    });
+          msg.channel.deleteMessage(msg.id)
+          msg.channel.deleteMessage(response.id)
+        }, 10000)
+      })
+    })
   }
-};
+}

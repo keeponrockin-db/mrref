@@ -1,25 +1,23 @@
 'use strict'
-const gemsList = require('./../gems_list.js');
+const gemsList = require('./../gems_list.js')
 
 /**
 * Adds bot uploaded comics to an archive
 */
 module.exports = {
   name: 'gemsreactions',
-  action(msg, emoji, userId) {
-    let user = msg.channel.guild.members.find(user => user.id === userId);
+  action (msg, emoji, userId) {
+    let user = msg.channel.guild.members.find(user => user.id === userId)
     if (!user.bot) {
       switch (emoji.name) {
         case '❌':
-          return gemsList.closeRoom(msg.channel.guild, userId, msg.id);
-          break;
+          return gemsList.closeRoom(msg.channel.guild, userId, msg.id)
         case '🥊':
-          return gemsList.joinRoom(msg.channel.guild, userId, msg.id);
-          break;
+          return gemsList.joinRoom(msg.channel.guild, userId, msg.id)
         default:
       }
     }
 
-    return false;
+    return false
   }
-};
+}

@@ -1,5 +1,5 @@
 'use strict'
-const gemsList = require('./../gems_list.js');
+const gemsList = require('./../gems_list.js')
 
 /**
 * List new entry or update old one on gems list
@@ -11,17 +11,17 @@ module.exports = {
   serverAdminOnly: false,
   shortDescription: 'Add yourself to the gems list.',
   usageExample: '!gems steam xrd',
-  action(bot, msg, suffix) {
-    let title = suffix;
+  action (bot, msg, suffix) {
+    let title = suffix
     return gemsList.getChannel(msg.channel.guild).then(channel => {
       return gemsList.updateRoom(msg.channel.guild, msg.author, title).then(() => {
         return msg.channel.createMessage(channel.mention + ' updated!').then(response => {
           setTimeout(() => {
-            msg.channel.deleteMessage(msg.id);
-            msg.channel.deleteMessage(response.id);
-          }, 10000);
-        });
-      });
-    });
+            msg.channel.deleteMessage(msg.id)
+            msg.channel.deleteMessage(response.id)
+          }, 10000)
+        })
+      })
+    })
   }
-};
+}
