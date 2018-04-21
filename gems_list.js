@@ -64,7 +64,7 @@ class GemsList {
           let gemHeaders = serverData.gemHeaders
           if (gemHeaders) {
             Object.keys(gemHeaders).forEach(game => {
-              if (gem.title.includes(game)) {
+              if (gem.title.toUpperCase().includes(game.toUpperCase())) {
                 content.embed.image = {
                   url: gemHeaders[game]
                 }
@@ -75,7 +75,7 @@ class GemsList {
           let gemIcons = serverData.gemIcons
           if (gemIcons) {
             Object.keys(gemIcons).forEach(icon => {
-              if (gem.title.includes(icon)) {
+              if (gem.title.toUpperCase().includes(icon.toUpperCase())) {
                 content.embed.thumbnail = {
                   url: gemIcons[icon]
                 }
