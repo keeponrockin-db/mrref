@@ -14,12 +14,13 @@ module.exports = {
       return false
     }
 
-    gemsList.removeExpiredGems(msg.channel.guild)
-
     return gemsList.getChannel(msg.channel.guild).then(channel => {
+      gemsList.removeExpiredGems(msg.channel.guild)
       if (msg.channel.id === channel.id) {
         channel.deleteMessage(msg.id)
+        return true
       }
+      return false
     })
   }
 }
