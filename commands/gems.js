@@ -16,10 +16,12 @@ module.exports = {
     return gemsList.getChannel(msg.channel.guild).then(channel => {
       return gemsList.updateRoom(msg.channel.guild, msg.author, title).then(() => {
         return msg.channel.createMessage(channel.mention + ' updated!').then(response => {
-          setTimeout(() => {
-            msg.channel.deleteMessage(msg.id)
-            msg.channel.deleteMessage(response.id)
-          }, 10000)
+          if (msg.channel.id === channel.id) {
+            setTimeout(() => {
+              msg.channel.deleteMessage(msg.id)
+              msg.channel.deleteMessage(response.id)
+            }, 10000)
+          }
         })
       })
     })
