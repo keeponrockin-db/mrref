@@ -143,6 +143,8 @@ class GemsList {
             return serverData
           })
         } else {
+          serverData.gems[creator.id].title = title
+
           let expiry = 3 * 1000 * 60 * 60
           let re = /.*?(\d+(?:\.\d+)?)\s*(h|m).*/i
           let results = title.match(re)
@@ -163,8 +165,6 @@ class GemsList {
             setTimeout(() => {
               this.removeExpiredGems(server)
             }, expiry)
-
-            serverData.gems[creator.id].title = title
             serverData.gems[creator.id].expiry = expiry
           }
         }
