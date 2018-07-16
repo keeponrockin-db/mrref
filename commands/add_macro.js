@@ -5,21 +5,24 @@ const persistence = require('moodochrome-bot').persistence
 * Changes main game visual for listed games
 */
 module.exports = {
-  commandAliases: ['!deletemacro'],
+  commandAliases: ['!addmacro'],
   canBeChannelRestricted: true,
-  uniqueId: 'deletemacro36872505',
+  uniqueId: 'addmacro36872505',
   serverAdminOnly: false,
-  shortDescription: 'Delete macro',
-  usageExample: '!deletemacro rev2',
+  shortDescription: 'Add macro',
+  usageExample: '!addmacro rev2 https://steamcdn-a.akamaihd.net/steam/apps/631560/header.jpg',
   action (bot, msg, suffix) {
     let server = msg.channel.guild
+    let re = /\s*(.*?)\s+(http.*)/i
+    let results = suffix.match(re)
 
-    if (!suffix) {
-      return msg.channel.createMessage('Please specify macro')
+    if (!results) {
+      return msg.channel.createMessage('Invalid link')
     }
 
-    let macro = suffix
-	
+    let macro = results[1]
+    let url = results[2]
+
     let user = server.members.find(user => user.id === msg.author.id)
     let isAdmin = user.permission.json.banMembers
     if (isAdmin) {
@@ -27,7 +30,7 @@ module.exports = {
         if (!serverData.macros) {
           serverData.macros = {}
         }
-        delete serverData.macros['!' + macro.toLowerCase()]
+        serverData.macros['!' + macro.toLowerCase()] = url
         return serverData
       }).then(() => {
         return msg.channel.createMessage('Macros updated!').then(response => {
