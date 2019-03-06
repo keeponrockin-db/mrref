@@ -17,6 +17,7 @@ module.exports = {
           }
           let comics = serverData.comics
           comics.push(attachment.url)
+          msg.channel.createMessage(`Saved as comic ${comics.length}`)
           return serverData
         })
       }
