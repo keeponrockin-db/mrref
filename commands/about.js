@@ -1,5 +1,4 @@
 'use strict'
-const libVersion = require('../node_modules/eris/package.json').version
 const botVersion = require('../package.json').version
 
 module.exports = {
@@ -12,7 +11,6 @@ module.exports = {
 # monochrome
 
 [ CREATOR ](You)
-[ LIBRARY ](Eris v${libVersion})\`\`\`
 [ VERSION ](Bot v${botVersion})\`\`\``)
   }
 }
