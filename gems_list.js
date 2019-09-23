@@ -30,7 +30,7 @@ class GemsList {
     }
   }
 
-  static update_ (server, gemsListChannel) {
+  static _update (server, gemsListChannel) {
     persistence.getDataForServer(server.id).then(serverData => {
       let gems = serverData.gems
       if (gems) {
@@ -171,7 +171,7 @@ class GemsList {
 
         return serverData
       }).then(() => {
-        this.update_(server, channel)
+        this._update(server, channel)
       })
     })
   }
@@ -190,7 +190,7 @@ class GemsList {
         serverData.gems[creator.id].info = info
         return serverData
       }).then(() => {
-        this.update_(server, channel)
+        this._update(server, channel)
       })
     })
   }
@@ -203,7 +203,7 @@ class GemsList {
           Object.keys(gems).forEach(creatorId => {
             let gem = gems[creatorId]
             if (Date.now() >= gem.expiry) {
-              this.closeRoom_(server, channel, creatorId)
+              this._closeRoom(server, channel, creatorId)
             }
           })
         }
@@ -211,7 +211,7 @@ class GemsList {
     })
   }
 
-  static closeRoom_ (server, gemsListChannel, userId) {
+  static _closeRoom (server, gemsListChannel, userId) {
     let participants = []
     persistence.editDataForServer(server.id, serverData => {
       let gems = serverData.gems
@@ -246,7 +246,7 @@ class GemsList {
         if (isAdmin) {
           Object.keys(gems).forEach(playerId => {
             if (gems[playerId].messageId === messageId) {
-              this.closeRoom_(server, channel, playerId)
+              this._closeRoom(server, channel, playerId)
               return true
             }
           })
@@ -258,7 +258,7 @@ class GemsList {
 
         let isOwner = (gems[userId].messageId === messageId)
         if (isOwner) {
-          this.closeRoom_(server, channel, userId)
+          this._closeRoom(server, channel, userId)
           return true
         } else {
           return false
@@ -267,7 +267,7 @@ class GemsList {
     })
   }
 
-  static joinRoom_ (server, gemsListChannel, user, masterId) {
+  static _joinRoom (server, gemsListChannel, user, masterId) {
     persistence.editDataForServer(server.id, serverData => {
       let gems = serverData.gems
       if (!gems[masterId].players[user.id]) {
@@ -286,7 +286,7 @@ class GemsList {
         return serverData
       }
     }).then(() => {
-      this.update_(server, gemsListChannel)
+      this._update(server, gemsListChannel)
     })
   }
 
@@ -302,7 +302,7 @@ class GemsList {
         Object.keys(gems).forEach(masterId => {
           let gem = gems[masterId]
           if (gem.messageId === messageId) {
-            this.joinRoom_(server, channel, user, masterId)
+            this._joinRoom(server, channel, user, masterId)
           }
         })
       })
@@ -318,7 +318,7 @@ class GemsList {
         serverData.gemHeaders[game] = url
         return serverData
       }).then(() => {
-        this.update_(server, channel)
+        this._update(server, channel)
       })
     })
   }
@@ -332,7 +332,7 @@ class GemsList {
         serverData.gemIcons[icon] = url
         return serverData
       }).then(() => {
-        this.update_(server, channel)
+        this._update(server, channel)
       })
     })
   }

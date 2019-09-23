@@ -2,7 +2,7 @@
 const persistence = require('moodochrome-bot').persistence
 
 /**
-* Changes main game visual for listed games
+* spits out all the macros
 */
 module.exports = {
   commandAliases: ['!listmacros'],

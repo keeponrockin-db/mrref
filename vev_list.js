@@ -1,7 +1,7 @@
 'use strict'
 const persistence = require('moodochrome-bot').persistence
 
-class GemsList {
+class VevList {
   static vev (userId, channel, issuerId) {
     let server = channel.guild
     let success = false
@@ -28,13 +28,13 @@ class GemsList {
       return serverData
     }).then(() => {
       if (success) {
-        this.vev_(userId, channel, sentenceLength)
+        this._vev(userId, channel, sentenceLength)
       }
       return success
     })
   }
 
-  static vev_ (userId, channel, sentenceLength) {
+  static _vev (userId, channel, sentenceLength) {
     let server = channel.guild
     return persistence.editDataForServer(server.id, serverData => {
       if (!serverData.vevList) {
@@ -85,13 +85,13 @@ class GemsList {
       return serverData
     }).then(() => {
       if (success) {
-        this.unvev_(userId, channel)
+        this._unvev(userId, channel)
       }
       return success
     })
   }
 
-  static unvev_ (userId, channel) {
+  static _unvev (userId, channel) {
     let server = channel.guild
     return persistence.editDataForServer(server.id, serverData => {
       if (!serverData.vevList) {
@@ -127,6 +127,10 @@ class GemsList {
     let remainingPoints = 0
     return persistence.editDataForServer(server.id, serverData => {
       let points = serverData.vevPoints
+      if (!points) {
+        points = {}
+      }
+
       if (!points[targetId] && points[targetId] !== 0) {
         points[targetId] = 420
       }
@@ -138,6 +142,24 @@ class GemsList {
       return remainingPoints
     })
   }
+
+  static regen (server, targetId) {
+    return persistence.editDataForServer(server.id, serverData => {
+      let points = serverData.vevPoints
+      if (!points) {
+        points = {}
+      }
+
+      if (!points[targetId] && points[targetId] !== 0) {
+        points[targetId] = 420
+      }
+
+      let amount = Math.floor(Math.random() + ((420 - points[targetId]) / 420))
+
+      points[targetId] += parseInt(amount)
+      return serverData
+    })
+  }
 }
 
-module.exports = GemsList
+module.exports = VevList

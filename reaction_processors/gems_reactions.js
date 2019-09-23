@@ -2,7 +2,7 @@
 const gemsList = require('./../gems_list.js')
 
 /**
-* Adds bot uploaded comics to an archive
+* Manages gems list posts
 */
 module.exports = {
   name: 'gemsreactions',
